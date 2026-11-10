@@ -7,10 +7,10 @@ def conectar_db():
     try:
         # ajusta estos datos con la conexion de la bd
         conn = pymssql.connect(
-            server='localhost', 
-            user='sa', 
-            password='TuPasswordSeguro', 
-            database='SecureStockDB'
+            server='ASUSRAFA\\SQLEXPRES2025', 
+            user='Rafael_Hernandez', 
+            password='123456789.', 
+            database='GestionIT'
         )
         return conn
     except Exception as e:

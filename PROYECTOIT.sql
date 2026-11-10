@@ -51,3 +51,4 @@ prodFACT int not null,
 ClienFACT int not null,
 )
 --No esta creada esta tabla de factura
+--Hola
