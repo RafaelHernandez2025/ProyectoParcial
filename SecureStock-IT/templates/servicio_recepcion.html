@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recepción y Admisión - SecureStock IT</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans antialiased">
+    <!-- Navbar Superior con Botón de Retorno Elegante -->
+    <header class="border-b border-slate-800 bg-slate-950 px-8 h-20 flex items-center justify-between sticky top-0 z-50 backdrop-blur">
+        <a href="/" class="text-xl font-bold text-cyan-400">SecureStock <span class="text-xs bg-cyan-950 text-cyan-300 px-2 py-0.5 rounded border border-cyan-800">IT</span></a>
+        <a href="/" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-cyan-300 font-medium text-xs rounded-xl border border-slate-700 transition flex items-center space-x-2 shadow-lg">
+            <span>&larr; Volver al Inicio</span>
+        </a>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-6 py-12">
+        <div class="mb-10">
+            <span class="text-xs font-mono uppercase bg-cyan-950 text-cyan-400 border border-cyan-800 px-3 py-1 rounded-full">Módulo Operativo 01</span>
+            <h1 class="text-3xl font-extrabold text-white mt-3">Recepción y Admisión de Equipos</h1>
+            <p class="text-slate-400 mt-2 text-sm">Formulario oficial de ingreso para taller y generación de reporte técnico automatizado.</p>
+        </div>
+
+        <!-- Requisitos necesarios -->
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-6 mb-8">
+            <h3 class="text-sm font-bold text-cyan-400 uppercase tracking-wider mb-3">Requisitos Obligatorios para la Admisión:</h3>
+            <ul class="text-xs text-slate-300 space-y-2 list-disc list-inside">
+                <li>Documento de identidad del cliente y datos de contacto verificados.</li>
+                <li>Especificación física del hardware recibido (equipo, cargador, accesorios declarados).</li>
+                <li>Autorización previa para diagnóstico en entorno aislado (Linux Live Tails)[cite: 4].</li>
+                <li>Firma digital o aceptación de políticas de privacidad y resguardo de datos personales.</li>
+            </ul>
+        </div>
+
+        <!-- Formulario Real Conectado a BD -->
+        <div class="bg-slate-950 border border-slate-800 rounded-2xl p-8">
+            <h3 class="text-lg font-bold text-white mb-6">Formulario de Registro de Ingreso</h3>
+            
+            <div id="alerta-exito" class="hidden mb-6 p-4 bg-emerald-950/80 border border-emerald-800 text-emerald-300 text-xs rounded-xl"></div>
+
+            <form id="form-admision" onsubmit="enviarAdmision(event)" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-2">Nombre del Cliente</label>
+                        <input type="text" id="cliente" required placeholder="Ej. Juan Pérez" class="w-full px-4 py-3 bg-slate-900 border border-slate-800 rounded-xl text-sm text-slate-200 focus:outline-none focus:border-cyan-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-2">Teléfono de Contacto</label>
+                        <input type="text" id="telefono" required placeholder="Ej. +503 7000-0000" class="w-full px-4 py-3 bg-slate-900 border border-slate-800 rounded-xl text-sm text-slate-200 focus:outline-none focus:border-cyan-500">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-2">Modelo del Equipo / Laptop</label>
+                        <input type="text" id="equipo" required placeholder="Ej. ASUS ROG Strix / PC Custom" class="w-full px-4 py-3 bg-slate-900 border border-slate-800 rounded-xl text-sm text-slate-200 focus:outline-none focus:border-cyan-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-400 mb-2">Número de Serie (S/N)</label>
+                        <input type="text" id="serial" required placeholder="Ej. SN-98427510X" class="w-full px-4 py-3 bg-slate-900 border border-slate-800 rounded-xl text-sm text-slate-200 focus:outline-none focus:border-cyan-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-2">Descripción de la Falla / Motivo de Ingreso</label>
+                    <textarea id="falla" rows="4" required placeholder="Detalle el motivo del mantenimiento o diagnóstico..." class="w-full px-4 py-3 bg-slate-900 border border-slate-800 rounded-xl text-sm text-slate-200 focus:outline-none focus:border-cyan-500"></textarea>
+                </div>
+
+                <button type="submit" class="w-full py-3.5 bg-cyan-600 hover:bg-cyan-500 text-white font-semibold rounded-xl text-sm transition shadow-lg shadow-cyan-950">
+                    Registrar Admisión en Base de Datos (SQL Server)
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        async function enviarAdmision(e) {
+            e.preventDefault();
+            const formData = new URLSearchParams();
+            formData.append('cliente', document.getElementById('cliente').value);
+            formData.append('equipo', document.getElementById('equipo').value);
+            formData.append('serial', document.getElementById('serial').value);
+            formData.append('falla', document.getElementById('falla').value);
+
+            const res = await fetch('/api/registrar-admision', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formData
+            });
+            const data = await res.json();
+            
+            const alerta = document.getElementById('alerta-exito');
+            alerta.innerText = data.mensaje;
+            alerta.classList.remove('hidden');
+            document.getElementById('form-admision').reset();
+        }
+    </script>
+</body>
+</html>

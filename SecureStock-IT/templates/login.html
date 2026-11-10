@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureStock IT - Autenticación Segura</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans flex items-center justify-center h-screen">
+
+    <div class="w-full max-w-md p-8 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl animate-fade-in relative overflow-hidden">
+        <!-- Accent Glow -->
+        <div class="absolute -top-10 -right-10 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+        <div class="text-center mb-6">
+            <h1 class="text-2xl font-bold tracking-wider text-cyan-400">SecureStock <span class="text-xs bg-cyan-950 text-cyan-300 px-2 py-0.5 rounded border border-cyan-800">IT</span></h1>
+            <p class="text-xs text-slate-400 mt-2">Acceso a Plataforma ERP & Seguridad SQL Server</p>
+        </div>
+
+        {% if error %}
+        <div class="mb-4 p-3 bg-rose-950/80 border border-rose-800 text-rose-300 text-xs rounded-lg text-center animate-bounce">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <form id="form-login" action="/login" method="POST" onsubmit="return validarLogin(event)" class="space-y-4">
+            <div>
+                <label class="block text-xs font-medium text-slate-400 mb-1">Correo Corporativo</label>
+                <input type="email" id="email" name="email" placeholder="almacen@securestock.com" 
+                       class="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-200 focus:outline-none focus:border-cyan-500 transition">
+                <span id="err-email" class="text-rose-500 text-[10px] hidden">Por favor ingresa un correo válido.</span>
+            </div>
+
+            <div>
+                <label class="block text-xs font-medium text-slate-400 mb-1">Contraseña</label>
+                <input type="password" id="password" name="password" placeholder="••••••••" 
+                       class="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-200 focus:outline-none focus:border-cyan-500 transition">
+                <span id="err-password" class="text-rose-500 text-[10px] hidden">La contraseña no puede estar vacía.</span>
+            </div>
+
+            <button type="submit" class="w-full py-3 bg-cyan-600 hover:bg-cyan-500 text-white font-semibold rounded-lg text-sm transition duration-200 shadow-lg shadow-cyan-950">
+                Iniciar Sesión Segura
+            </button>
+        </form>
+
+        <div class="mt-6 pt-4 border-t border-slate-800 text-center">
+            <p class="text-[11px] text-slate-500">Credenciales de prueba:</p>
+            <p class="text-[10px] text-slate-400 font-mono mt-1">almacen@securestock.com | admin123</p>
+            <p class="text-[10px] text-slate-400 font-mono">gerencia@securestock.com | admin123</p>
+        </div>
+    </div>
+
+    <script>
+        function validarLogin(e) {
+            let esValido = true;
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            
+            document.getElementById('err-email').classList.add('hidden');
+            document.getElementById('err-password').classList.add('hidden');
+
+            if (!email) {
+                document.getElementById('err-email').classList.remove('hidden');
+                esValido = false;
+            }
+            if (!password) {
+                document.getElementById('err-password').classList.remove('hidden');
+                esValido = false;
+            }
+
+            return esValido;
+        }
+    </script>
+</body>
+</html>

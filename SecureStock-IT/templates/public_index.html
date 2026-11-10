@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureStock IT - Soluciones y Ensamble de Hardware</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        corporate: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                            950: '#090d16'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-corporate-900 text-slate-100 font-sans antialiased selection:bg-cyan-500 selection:text-slate-950">
+
+    <!-- Navbar Superior -->
+    <header class="border-b border-slate-800 bg-corporate-900/90 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <a href="#" class="text-xl font-extrabold tracking-wider text-cyan-400">SecureStock <span class="text-xs bg-cyan-950 text-cyan-300 px-2 py-0.5 rounded border border-cyan-800">IT</span></a>
+            </div>
+
+            <!-- Menú PC -->
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-300">
+                <a href="#inicio" class="hover:text-cyan-400 transition">Inicio</a>
+                <a href="#componentes" class="hover:text-cyan-400 transition">Catálogo</a>
+                <a href="#servicios" class="hover:text-cyan-400 transition">Servicios Técnicos</a>
+            </nav>
+
+            <!-- Acciones Derecha (Login Universal / Usuario) -->
+            <div class="hidden md:flex items-center space-x-4">
+                {% if usuario %}
+                    <div class="flex items-center space-x-3 bg-slate-800/80 px-4 py-2 rounded-xl border border-slate-700">
+                        <span class="text-xs text-cyan-300 font-medium">{{ usuario.nombre }}</span>
+                        {% if usuario.tipo == 'interno' %}
+                            <a href="/dashboard" class="text-xs bg-cyan-600 hover:bg-cyan-500 text-white px-3 py-1 rounded transition">Panel ERP</a>
+                        {% endif %}
+                        <a href="/logout" class="text-xs text-rose-400 hover:text-rose-300">Salir</a>
+                    </div>
+                {% else %}
+                    <button onclick="abrirModalLogin()" class="px-5 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-xs rounded-xl shadow-lg shadow-cyan-950 transition">
+                        Iniciar Sesión
+                    </button>
+                {% endif %}
+            </div>
+
+            <!-- Botón Hamburguesa Móvil -->
+            <button onclick="toggleMenu()" class="md:hidden text-slate-300 hover:text-white focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Menú Desplegable Móvil -->
+        <div id="mobile-menu" class="hidden md:hidden px-6 pt-2 pb-6 bg-corporate-900 border-b border-slate-800 space-y-3">
+            <a href="#inicio" class="block text-sm text-slate-300 hover:text-cyan-400">Inicio</a>
+            <a href="#componentes" class="block text-sm text-slate-300 hover:text-cyan-400">Catálogo</a>
+            <a href="#servicios" class="block text-sm text-slate-300 hover:text-cyan-400">Servicios Técnicos</a>
+            <div class="pt-4 border-t border-slate-800">
+                {% if usuario %}
+                    <p class="text-xs text-cyan-400 mb-2">{{ usuario.nombre }}</p>
+                    {% if usuario.tipo == 'interno' %}<a href="/dashboard" class="block text-xs bg-cyan-600 text-center py-2 rounded mb-2 text-white">Ir al Panel ERP</a>{% endif %}
+                    <a href="/logout" class="block text-xs text-rose-400 text-center py-1">Cerrar Sesión</a>
+                {% else %}
+                    <button onclick="abrirModalLogin()" class="w-full py-2 bg-cyan-600 text-white text-xs font-semibold rounded-lg">Iniciar Sesión</button>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="py-24 px-6 text-center max-w-4xl mx-auto">
+        <span class="text-xs font-mono uppercase bg-cyan-950/80 text-cyan-400 border border-cyan-800 px-3 py-1.5 rounded-full">Infraestructura Tecnológica & Seguridad Trazable</span>
+        <h2 class="text-4xl md:text-6xl font-extrabold text-white mt-6 tracking-tight">Ensamble Especializado y Soporte Técnico Avanzado</h2>
+        <p class="text-slate-400 mt-6 text-base md:text-lg">Soluciones integrales corporativas y particulares con control de inventarios seguro y trazabilidad en tiempo real.</p>
+    </section>
+
+<!-- Sección de Servicios Técnicos Interactivos -->
+    <section id="servicios" class="max-w-7xl mx-auto px-6 py-16 border-t border-slate-800/80">
+        <div class="text-center max-w-2xl mx-auto mb-12">
+            <h3 class="text-2xl md:text-3xl font-bold text-white">Nuestros Módulos y Servicios Especializados</h3>
+            <p class="text-sm text-slate-400 mt-2">Haz clic en cualquier servicio para acceder al portal operativo completo.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Servicio 1 -->
+            <div class="bg-slate-800/40 border border-slate-800 p-8 rounded-2xl hover:border-cyan-700/50 transition flex flex-col justify-between">
+                <div>
+                    <div class="w-10 h-10 rounded-xl bg-cyan-950 border border-cyan-800 flex items-center justify-center text-cyan-400 font-bold mb-4">01</div>
+                    <h4 class="text-lg font-bold text-white">Recepción y Admisión de Equipos</h4>
+                    <p class="text-sm text-slate-400 mt-2">Registro digital obligatorio con captura fotográfica y respaldo técnico automatizado mediante reportes AIDA64.</p>
+                </div>
+                <div class="mt-8 pt-4 border-t border-slate-800/80">
+                    <a href="/servicio/recepcion" class="inline-flex items-center justify-center w-full py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-xs rounded-xl shadow-lg shadow-cyan-950 transition">
+                        Acceder al Módulo &rarr;
+                    </a>
+                </div>
+            </div>
+
+            <!-- Servicio 2 -->
+            <div class="bg-slate-800/40 border border-slate-800 p-8 rounded-2xl hover:border-cyan-700/50 transition flex flex-col justify-between">
+                <div>
+                    <div class="w-10 h-10 rounded-xl bg-cyan-950 border border-cyan-800 flex items-center justify-center text-cyan-400 font-bold mb-4">02</div>
+                    <h4 class="text-lg font-bold text-white">Mesa de Trabajo y Diagnóstico</h4>
+                    <p class="text-sm text-slate-400 mt-2">Laboratorio especializado para mantenimiento preventivo, correctivo y ensamblaje de estaciones de alto rendimiento.</p>
+                </div>
+                <div class="mt-8 pt-4 border-t border-slate-800/80">
+                    <a href="/servicio/diagnostico" class="inline-flex items-center justify-center w-full py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-xs rounded-xl shadow-lg shadow-cyan-950 transition">
+                        Ver Protocolos &rarr;
+                    </a>
+                </div>
+            </div>
+
+            <!-- Servicio 3 -->
+            <div class="bg-slate-800/40 border border-slate-800 p-8 rounded-2xl hover:border-cyan-700/50 transition flex flex-col justify-between">
+                <div>
+                    <div class="w-10 h-10 rounded-xl bg-cyan-950 border border-cyan-800 flex items-center justify-center text-cyan-400 font-bold mb-4">03</div>
+                    <h4 class="text-lg font-bold text-white">Control de Inventarios & QR</h4>
+                    <p class="text-sm text-slate-400 mt-2">Trazabilidad estricta de componentes (GPUs, CPUs, SSDs NVMe) con alertas automáticas ante mermas o descuadres.</p>
+                </div>
+                <div class="mt-8 pt-4 border-t border-slate-800/80">
+                    <a href="/servicio/inventario-qr" class="inline-flex items-center justify-center w-full py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-xs rounded-xl shadow-lg shadow-cyan-950 transition">
+                        Ver Trazabilidad &rarr;
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Catálogo de Componentes -->
+    <section id="componentes" class="max-w-7xl mx-auto px-6 py-16 border-t border-slate-800/80">
+        <h3 class="text-2xl font-bold text-slate-100 mb-8">Stock Disponible en Almacén</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {% for item in componentes %}
+            <div class="bg-slate-800/40 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between hover:border-cyan-800 transition">
+                <div>
+                    <span class="text-[10px] font-mono text-cyan-400 bg-cyan-950 px-2 py-0.5 rounded border border-cyan-900">ID: {{ item.id_producto }}</span>
+                    <h4 class="text-lg font-bold text-white mt-3">{{ item.modelo }}</h4>
+                    <p class="text-2xl font-extrabold text-cyan-400 mt-2">${{ "%.2f"|format(item.precio) }}</p>
+                </div>
+                <div class="mt-6 pt-4 border-t border-slate-800 flex justify-between items-center text-xs">
+                    <span class="text-slate-400">Existencias: <strong class="text-slate-200">{{ item.existencias }} un.</strong></span>
+                    <span class="text-emerald-400 font-medium">Disponible</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Footer Completo Estilo iLovePDF -->
+    <footer class="border-t border-slate-800 bg-corporate-950 text-slate-400 text-sm mt-20">
+        <div class="max-w-7xl mx-auto px-6 py-16 grid grid-cols-2 md:grid-cols-5 gap-10">
+            <div>
+                <h5 class="text-white font-semibold text-xs uppercase tracking-wider mb-4">PRODUCTO</h5>
+                <ul class="space-y-2.5 text-xs">
+                    <li><a href="#inicio" class="hover:text-cyan-400 transition">Inicio</a></li>
+                    <li><a href="#componentes" class="hover:text-cyan-400 transition">Hardware</a></li>
+                    <li><a href="#servicios" class="hover:text-cyan-400 transition">Servicios</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-white font-semibold text-xs uppercase tracking-wider mb-4">RECURSOS</h5>
+                <ul class="space-y-2.5 text-xs">
+                    <li><a href="#" class="hover:text-cyan-400 transition">Documentación IT</a></li>
+                    <li><a href="#" class="hover:text-cyan-400 transition">Manual Operativo</a></li>
+                    <li><a href="#" class="hover:text-cyan-400 transition">Portal UGB</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-white font-semibold text-xs uppercase tracking-wider mb-4">SOLUCIONES</h5>
+                <ul class="space-y-2.5 text-xs">
+                    <li><a href="#" class="hover:text-cyan-400 transition">Empresas IT</a></li>
+                    <li><a href="#" class="hover:text-cyan-400 transition">Soporte Avanzado</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-white font-semibold text-xs uppercase tracking-wider mb-4">LEGAL</h5>
+                <ul class="space-y-2.5 text-xs">
+                    <li><a href="/seguridad" class="hover:text-cyan-400 transition">Seguridad CID</a></li>
+                    <li><a href="#" class="hover:text-cyan-400 transition">Privacidad de Datos</a></li>
+                    <li><a href="/terminos" class="hover:text-cyan-400 transition">Términos y Condiciones</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-white font-semibold text-xs uppercase tracking-wider mb-4">EMPRESA</h5>
+                <ul class="space-y-2.5 text-xs">
+                    <li><a href="/sobre-nosotros" class="hover:text-cyan-400 transition">Sobre Nosotros</a></li>
+                    <li><a href="/contacto" class="hover:text-cyan-400 transition">Contacto Taller</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-6 py-8 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center text-xs">
+            <p>SecureStock IT Enterprise &copy; 2026 - Universidad Gerardo Barrios (UGB)</p>
+            <div class="flex space-x-6 mt-4 md:mt-0">
+                <span class="hover:text-white cursor-pointer">Twitter/X</span>
+                <span class="hover:text-white cursor-pointer">LinkedIn</span>
+                <span class="hover:text-white cursor-pointer">GitHub</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL DE LOGIN UNIVERSAL (Oculto por defecto) -->
+    <div id="modal-login" class="fixed inset-0 bg-corporate-950/80 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-8 relative shadow-2xl">
+            <button onclick="cerrarModalLogin()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg">&times;</button>
+            <div class="text-center mb-6">
+                <h3 class="text-xl font-bold text-white">Acceso al Sistema</h3>
+                <p class="text-xs text-slate-400 mt-1">Ingresa con tus credenciales corporativas o de cliente.</p>
+            </div>
+            <form action="/login" method="POST" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Correo Electrónico</label>
+                    <input type="email" name="email" required placeholder="correo@empresa.com" class="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-200 focus:outline-none focus:border-cyan-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-400 mb-1">Contraseña</label>
+                    <input type="password" name="password" required placeholder="••••••••" class="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-200 focus:outline-none focus:border-cyan-500">
+                </div>
+                <button type="submit" class="w-full py-3 bg-cyan-600 hover:bg-cyan-500 text-white font-semibold rounded-lg text-sm transition shadow-lg shadow-cyan-950">
+                    Ingresar
+                </button>
+            </form>
+            <div class="mt-4 pt-3 border-t border-slate-800 text-[11px] text-slate-500 text-center">
+                <p>Prueba Gerencia: gerencia@securestock.com | admin123</p>
+                <p>Prueba Cliente: cliente@gmail.com | user123</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+        function abrirModalLogin() {
+            document.getElementById('modal-login').classList.remove('hidden');
+            document.getElementById('modal-login').classList.add('flex');
+        }
+        function cerrarModalLogin() {
+            document.getElementById('modal-login').classList.add('hidden');
+            document.getElementById('modal-login').classList.remove('flex');
+        }
+    </script>
+</body>
+</html>

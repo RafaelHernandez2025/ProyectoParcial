@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureStock IT - Panel ERP & Control</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .pulse-subtle { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between">
+            <div>
+                <div class="p-6 border-b border-slate-800">
+                    <h1 class="text-xl font-bold tracking-wider text-cyan-400">SecureStock <span class="text-xs bg-cyan-950 text-cyan-300 px-2 py-0.5 rounded border border-cyan-800">IT</span></h1>
+                    <p class="text-xs text-slate-400 mt-1">Gestión y Trazabilidad Segura</p>
+                </div>
+                <nav class="p-4 space-y-2">
+                    <button onclick="mostrarSeccion('inventario')" class="w-full text-left px-4 py-2.5 rounded-lg bg-cyan-950/50 text-cyan-400 border border-cyan-800/50 font-medium text-sm transition">Dashboard de Stock</button>
+                    <button onclick="mostrarSeccion('carrito')" class="w-full text-left px-4 py-2.5 rounded-lg hover:bg-slate-800 text-slate-300 text-sm transition flex justify-between items-center">
+                        <span>Carrito de Salidas</span>
+                        <span id="badge-carrito" class="bg-cyan-500 text-slate-950 font-bold text-[10px] px-2 py-0.5 rounded-full">0</span>
+                    </button>
+                </nav>
+            </div>
+            
+            <!-- User Info Sidebar -->
+            <div class="p-4 border-t border-slate-800 bg-slate-900/60">
+                <div class="flex items-center space-x-3 mb-2">
+                    <div class="w-8 h-8 rounded-full bg-cyan-900 border border-cyan-700 flex items-center justify-center text-cyan-300 font-bold text-xs">
+                        {{ usuario.nombre[0] }}
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-slate-200">{{ usuario.nombre }}</p>
+                        <p class="text-[10px] text-cyan-400 font-mono">{{ usuario.rol }}</p>
+                    </div>
+                </div>
+                <a href="/logout" class="block text-center w-full py-1.5 bg-rose-950/50 hover:bg-rose-900/80 text-rose-300 border border-rose-800/50 rounded text-xs transition">Cerrar Sesión</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col overflow-y-auto">
+            <header class="h-16 bg-slate-900/50 border-b border-slate-800 flex items-center justify-between px-8">
+                <h2 class="text-lg font-semibold text-slate-200" id="titulo-seccion">Análisis de Inventario en Tiempo Real</h2>
+                <div class="flex items-center space-x-3">
+                    <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 pulse-subtle"></span>
+                    <span class="text-xs text-slate-400 font-mono">SQL Server Audit Activo</span>
+                </div>
+            </header>
+
+            <div class="p-8">
+                <!-- Banner de Alertas / Notificaciones -->
+                <div id="notificacion" class="hidden mb-6 p-4 rounded-xl text-sm font-medium transition-all duration-300"></div>
+
+                <!-- Sección: Inventario General -->
+                <div id="sec-inventario">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl">
+                            <p class="text-xs text-slate-400 uppercase font-medium">Estado del Sistema</p>
+                            <p class="text-2xl font-bold text-emerald-400 mt-2">Seguro / ACID Activo</p>
+                        </div>
+                        <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl">
+                            <p class="text-xs text-slate-400 uppercase font-medium">Motor Estadístico</p>
+                            <p class="text-2xl font-bold text-cyan-400 mt-2">Pandas & NumPy</p>
+                        </div>
+                        <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl">
+                            <p class="text-xs text-slate-400 uppercase font-medium">Rol Actual</p>
+                            <p class="text-2xl font-bold text-indigo-400 mt-2">{{ usuario.rol }}</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+                        <div class="px-6 py-4 border-b border-slate-800 flex justify-between items-center">
+                            <h3 class="font-semibold text-slate-200">Existencias e Indicadores de Mermas</h3>
+                            <button onclick="cargarInventario()" class="text-xs bg-slate-800 hover:bg-slate-700 text-cyan-400 px-3 py-1.5 rounded-lg border border-slate-700 transition">Actualizar Datos</button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-950/50 text-xs text-slate-400 uppercase border-b border-slate-800">
+                                        <th class="px-6 py-3">ID</th>
+                                        <th class="px-6 py-3">Modelo / Componente</th>
+                                        <th class="px-6 py-3">Precio Unitario</th>
+                                        <th class="px-6 py-3">Existencias</th>
+                                        <th class="px-6 py-3">Estado Analítico</th>
+                                        <th class="px-6 py-3 text-center">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-inventario" class="divide-y divide-slate-800 text-sm"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección: Carrito de Salidas -->
+                <div id="sec-carrito" class="hidden">
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+                        <h3 class="text-lg font-bold text-slate-200 mb-4">Orden de Salida / Despacho de Hardware</h3>
+                        
+                        <div class="overflow-x-auto mb-6">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-950/50 text-xs text-slate-400 uppercase border-b border-slate-800">
+                                        <th class="px-4 py-2">Modelo</th>
+                                        <th class="px-4 py-2">Precio</th>
+                                        <th class="px-4 py-2">Cantidad</th>
+                                        <th class="px-4 py-2">Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-carrito" class="divide-y divide-slate-800 text-sm"></tbody>
+                            </table>
+                        </div>
+
+                        <div class="flex justify-between items-center pt-4 border-t border-slate-800">
+                            <div>
+                                <p class="text-xs text-slate-400">Total Despacho:</p>
+                                <p class="text-2xl font-bold text-cyan-400" id="total-carrito">$0.00</p>
+                            </div>
+                            <button onclick="confirmarDespacho()" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg text-sm transition">Procesar Transacción (BEGIN TRANSACTION)</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let carrito = [];
+        let productosCache = [];
+
+        async function cargarInventario() {
+            try {
+                const response = await fetch('/api/inventario');
+                productosCache = await response.json();
+                const tbody = document.getElementById('tabla-inventario');
+                tbody.innerHTML = '';
+                
+                productosCache.forEach(item => {
+                    const esCritico = item.estado_alerta.includes('CRÍTICO');
+                    const badgeClass = esCritico 
+                        ? 'bg-rose-950/60 text-rose-400 border border-rose-800/60 px-2.5 py-1 rounded-full text-xs font-medium' 
+                        : 'bg-emerald-950/60 text-emerald-400 border border-emerald-800/60 px-2.5 py-1 rounded-full text-xs font-medium';
+                    
+                    const row = `
+                        <tr class="hover:bg-slate-800/50 transition">
+                            <td class="px-6 py-4 font-mono text-slate-400">${item.id_producto}</td>
+                            <td class="px-6 py-4 font-medium text-slate-200">${item.modelo}</td>
+                            <td class="px-6 py-4 text-slate-300">$${item.precio.toFixed(2)}</td>
+                            <td class="px-6 py-4 text-slate-300 font-bold">${item.existencias}</td>
+                            <td class="px-6 py-4"><span class="${badgeClass}">${item.estado_alerta}</span></td>
+                            <td class="px-6 py-4 text-center">
+                                <button onclick="agregarAlCarrito(${item.id_producto})" class="px-3 py-1 bg-cyan-950 hover:bg-cyan-900 border border-cyan-800 text-cyan-300 rounded text-xs transition">
+                                    + Agregar
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+            } catch (error) {
+                console.error('Error al cargar datos:', error);
+            }
+        }
+
+        function agregarAlCarrito(id) {
+            const prod = productosCache.find(p => p.id_producto === id);
+            if (!prod) return;
+
+            const itemEnCarrito = carrito.find(c => c.id_producto === id);
+            if (itemEnCarrito) {
+                if (itemEnCarrito.cantidad < prod.existencias) {
+                    itemEnCarrito.cantidad++;
+                } else {
+                    mostrarNotificacion("No puedes exceder el stock físico disponible en almacén.", "error");
+                    return;
+                }
+            } else {
+                carrito.push({ ...prod, cantidad: 1 });
+            }
+
+            actualizarCarritoUI();
+            mostrarNotificacion(`Componente ${prod.modelo} añadido a la orden de salida.`, "exito");
+        }
+
+        function actualizarCarritoUI() {
+            document.getElementById('badge-carrito').innerText = carrito.reduce((sum, item) => sum + item.cantidad, 0);
+            const tbody = document.getElementById('tabla-carrito');
+            tbody.innerHTML = '';
+            let total = 0;
+
+            carrito.forEach(item => {
+                const subtotal = item.precio * item.cantidad;
+                total += subtotal;
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="px-4 py-3 font-medium text-slate-200">${item.modelo}</td>
+                        <td class="px-4 py-3 text-slate-300">$${item.precio.toFixed(2)}</td>
+                        <td class="px-4 py-3 text-slate-300 font-bold">${item.cantidad}</td>
+                        <td class="px-4 py-3 text-cyan-400 font-bold">$${subtotal.toFixed(2)}</td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('total-carrito').innerText = `$${total.toFixed(2)}`;
+        }
+
+        async function confirmarDespacho() {
+            if (carrito.length === 0) {
+                mostrarNotificacion("El carrito se encuentra vacío.", "error");
+                return;
+            }
+
+            const response = await fetch('/api/procesar-salida', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ items: carrito })
+            });
+
+            const res = await response.json();
+            if (response.ok) {
+                mostrarNotificacion(res.mensaje, "exito");
+                carrito = [];
+                actualizarCarritoUI();
+                cargarInventario();
+            } else {
+                mostrarNotificacion(res.mensaje, "error");
+            }
+        }
+
+        function mostrarSeccion(sec) {
+            if (sec === 'inventario') {
+                document.getElementById('sec-inventario').classList.remove('hidden');
+                document.getElementById('sec-carrito').classList.add('hidden');
+                document.getElementById('titulo-seccion').innerText = "Análisis de Inventario en Tiempo Real";
+            } else {
+                document.getElementById('sec-inventario').classList.add('hidden');
+                document.getElementById('sec-carrito').classList.remove('hidden');
+                document.getElementById('titulo-seccion').innerText = "Orden de Despacho y Carrito de Salidas";
+            }
+        }
+
+        function mostrarNotificacion(msj, tipo) {
+            const noti = document.getElementById('notificacion');
+            noti.innerText = msj;
+            noti.classList.remove('hidden', 'bg-emerald-950/80', 'border-emerald-800', 'text-emerald-300', 'bg-rose-950/80', 'border-rose-800', 'text-rose-300');
+            
+            if (tipo === 'exito') {
+                noti.classList.add('bg-emerald-950/80', 'border', 'border-emerald-800', 'text-emerald-300');
+            } else {
+                noti.classList.add('bg-rose-950/80', 'border', 'border-rose-800', 'text-rose-300');
+            }
+
+            setTimeout(() => { noti.classList.add('hidden'); }, 4000);
+        }
+
+        cargarInventario();
+    </script>
+</body>
+</html>
