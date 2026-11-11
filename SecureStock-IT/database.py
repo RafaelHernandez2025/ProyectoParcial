@@ -23,14 +23,16 @@ def obtener_inventario_analitico():
     if not conn:
         # Datos de respaldo simulados en caso de que la BD no esté en línea todavía
         data = {
-            'id_producto': [1, 2, 3, 4, 5],
-            'modelo': ['RTX 4070 Ti', 'Ryzen 9 7900X', 'SSD NVMe 2TB', 'RAM 16GB DDR5', 'Fuente 850W Gold'],
-            'precio': [850.00, 420.00, 150.00, 80.00, 120.00],
-            'existencias': [2, 15, 4, 30, 1]
+            'IDprod': [1, 2, 3, 4, 5],
+            'nombreProd': ['RTX 4070 Ti', 'Ryzen 9 7900X', 'SSD NVMe 2TB', 'RAM 16GB DDR5', 'Fuente 850W Gold'],
+            'costoprod': [850.00, 420.00, 150.00, 80.00, 120.00],
+            'existencias': [2, 15, 4, 30, 1],
+            'descripcion':['nvidia RTX470Ti de 8gb de vram','Procesado AMD Ryzen 9 7900X ','Memoria corsair de 16bg de RAM DDR5','Memoria de almacenamiento SSD NVMe 2TB', 'aaaa']
+        
         }
         df = pd.DataFrame(data)
     else:
-        query = "SELECT id_producto, modelo, precio, existencias FROM dbo.Inventario_Repuestos"
+        query = "SELECT IDprod, nombreProd, costoprod, existencias, descripcion FROM productos"
         df = pd.read_sql(query, conn)
         conn.close()
     
