@@ -20,8 +20,9 @@ IDprod int not null primary key,
 nombreProd Varchar(30) not null,
 costoprod decimal(10,2) not null,
 existencias int not null,
-descripcion varchar(20)
+descripcion varchar(50)
 )
+
 
 Create table sucursal(
 idSucursal int not null primary key,
