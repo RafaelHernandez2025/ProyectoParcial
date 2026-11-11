@@ -48,3 +48,5 @@ def obtener_inventario_analitico():
         df['estado_alerta'] = 'Sin datos'
         
     return df
+
+
