@@ -22,6 +22,7 @@ costoprod decimal(10,2) not null,
 existencias int not null,
 descripcion varchar(50)
 )
+insert into productos values(1, "Nvidia RTX 5070ti", 850, 7, "Targeta grafica de 16gb de vram")
 
 
 Create table sucursal(

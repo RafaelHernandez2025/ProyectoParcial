@@ -23,12 +23,11 @@ def obtener_inventario_analitico():
     if not conn:
         # Datos de respaldo simulados en caso de que la BD no esté en línea todavía
         data = {
-          'IDprod': [1, 2, 3, 4, 5],
+       IDprod': [1, 2, 3, 4, 5],
             'nombreProd': ['RTX 4070 Ti', 'Ryzen 9 7900X', 'SSD NVMe 2TB', 'RAM 16GB DDR5', 'Fuente 850W Gold'],
             'costoprod': [850.00, 420.00, 150.00, 80.00, 120.00],
             'existencias': [2, 15, 4, 30, 1],
-            'descripcion': ['NVIDIA RTX 4070 Ti de 12GB', 'Procesador AMD Ryzen 9 7900X', 'Memoria SSD NVMe 2TB', 'Memoria RAM 16GB DDR5', 'Fuente de poder 850W 80+ Gold'
-            ]
+            'descripcion': ['NVIDIA RTX 4070 Ti de 12GB', 'Procesador AMD Ryzen 9 7900X', 'Memoria SSD NVMe 2TB', 'Memoria RAM 16GB DDR5', 'Fuente de poder 850W 80+ Gold']
         }
         df = pd.DataFrame(data)
     else:
@@ -48,11 +47,3 @@ def obtener_inventario_analitico():
         df['estado_alerta'] = 'Sin datos'
         
     return df
-    # --- Pone esto al final de todo tu código ---
-if __name__ == "__main__":
-    print("Ejecutando análisis de inventario...")
-    df_resultado = obtener_inventario_analitico()
-    print("\n--- RESULTADO OBTENIDO ---")
-    print(df_resultado)
-
-    # 
