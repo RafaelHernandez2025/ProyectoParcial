@@ -23,8 +23,6 @@ existencias int not null,
 descripcion varchar(50)
 )
 
-
-
 Create table sucursal(
 idSucursal int not null primary key,
 Sucursal varchar(80) not null,
