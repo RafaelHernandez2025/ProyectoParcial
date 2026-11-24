@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 
 def conectar_db():
-    """Establece la conexión con la base de datos SQL Server."""
+    """Estable ce la conexión con la base de datos SQL Server."""
     try:
         # ajusta estos datos con la conexion de la bd
         conn = pymssql.connect(

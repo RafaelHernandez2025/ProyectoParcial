@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CRUD de it</title>
+  <style>
+    :root {
+      --bg: #f4f6f9;
+      --surface: #ffffff;
+      --border: #dce1e7;
+      --text: #1e293b;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --success: #16a34a;
+      --warning: #d97706;
+      --danger: #dc2626;
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      padding: 1.5rem 1rem;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Single-screen Horizontal Form Grid */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 110px 1.2fr 120px 110px 1.5fr;
+      gap: 0.75rem;
+      align-items: end;
+    }
+
+    @media (max-width: 850px) {
+      .form-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+      color: var(--muted);
+    }
+
+    input {
+      width: 100%;
+      padding: 0.5rem 0.65rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--primary);
+    }
+
+    .crud-actions-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 1rem;
+      padding-top: 0.9rem;
+      border-top: 1px solid var(--border);
+    }
+
+    button, .btn {
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      padding: 0.5rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.15s;
+    }
+
+    button:hover, .btn:hover {
+      opacity: 0.9;
+    }
+
+    .btn-create {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-update {
+      background: var(--warning);
+      color: #fff;
+    }
+
+    .btn-delete {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .btn-clear {
+      background: #e2e8f0;
+      color: var(--text);
+      margin-left: auto;
+    }
+
+    .btn-sm {
+      padding: 0.28rem 0.6rem;
+      font-size: 0.78rem;
+    }
+
+    .btn-edit-row {
+      background: #fef3c7;
+      color: var(--warning);
+    }
+
+    .btn-delete-row {
+      background: #fee2e2;
+      color: var(--danger);
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .toolbar input {
+      max-width: 320px;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 0.7rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    th {
+      background: #f8fafc;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+    }
+
+    td.desc-col {
+      white-space: normal;
+      max-width: 260px;
+    }
+
+    .row-actions {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 1.5rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Inventario de componentes de IT</h1>
+      <span style="color: var(--muted); font-size: 0.85rem;"></span>
+    </header>
+
+    <!-- TOP PANEL: CREATE / UPDATE / DELETE BY ID FORM -->
+    <section class="card">
+      <div class="card-title">
+        <span>Detalles</span>
+        <span style="font-size: 0.78rem; font-weight: 400; color: var(--muted);">
+        </span>
+      </div>
+
+      <!-- Python Flask / FastAPI Form -->
+      <form method="POST">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="IDprod">ID</label>
+            <input type="number" id="IDprod" name="IDprod" placeholder="101" value="" required />
+          </div>
+
+          <div class="form-group">
+            <label for="nombreProd">Nombre del producto</label>
+            <input type="text" id="nombreProd" name="nombreProd" maxlength="30" placeholder="e.g. Router Wi-Fi 6" value="" />
+          </div>
+
+          <div class="form-group">
+            <label for="costoprod">Costo</label>
+            <input type="number" step="0.01" id="costoprod" name="costoprod" placeholder="0.00" value="{{ selected.costoprod if selected else '' }}" />
+          </div>
+
+          <div class="form-group">
+            <label for="existencias">existencias</label>
+            <input type="number" id="existencias" name="existencias" placeholder="0" value="{{ selected.existencias if selected else '' }}" />
+          </div>
+
+          <div class="form-group">
+            <label for="descripcion">descripcion </label>
+            <input type="text" id="descripcion" name="descripcion" maxlength="50" placeholder="Short description..." value="{{ selected.descripcion if selected else '' }}" />
+          </div>
+        </div>
+
+        <!-- ALL CRUD ACTION BUTTONS IN ONE BAR -->
+        <div class="crud-actions-bar">
+          <button type="submit" formaction="/create" class="btn-create">Crear</button>
+          <button type="submit" formaction="/update" class="btn-update">Modificar</button>
+          <button type="submit" formaction="/delete" class="btn-delete">Eliminar por ID</button>
+          <a href="/" class="btn btn-clear">Eliminar</a>
+        </div>
+      </form>
+    </section>
+
+    <!-- BOTTOM PANEL: READ & QUICK ROW ACTIONS -->
+    <section class="card">
+      <div class="card-title">
+        <span>Productos registrados</span>
+      </div>
+
+      <form action="/" method="GET" class="toolbar">
+        <input type="text" name="q" placeholder="Search by ID or nombreProd..." value="" />
+        <button type="submit" class="btn-create">Buscar</button>
+      </form>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>IDprod</th>
+              <th>nombreProd</th>
+              <th>costoprod</th>
+              <th>existencias</th>
+              <th>descripcion</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!--
+              Jinja2 Loop for Python:
+              {% for p in products %}
+              <tr>
+                <td><strong>{{ p.IDprod }}</strong></td>
+                <td>{{ p.nombreProd }}</td>
+                <td>${{ "%.2f"|format(p.costoprod) }}</td>
+                <td>{{ p.existencias }}</td>
+                <td class="desc-col">{{ p.descripcion }}</td>
+                <td>
+                  <div class="row-actions">
+                    <a href="/?edit={{ p.IDprod }}" class="btn btn-sm btn-edit-row">Load to Edit</a>
+                    <a href="/delete/{{ p.IDprod }}" class="btn btn-sm btn-delete-row">Delete</a>
+                  </div>
+                </td>
+              </tr>
+              {% else %}
+              <tr>
+                <td colspan="6" class="empty">No products registered.</td>
+              </tr>
+              {% endfor %}
+            -->
+
+            <!-- Static Preview Rows (Remove when connecting Jinja2) -->
+            <tr>
+              <td><strong>101</strong></td>
+              <td>Switch Cisco 8-Port</td>
+              <td>$85.50</td>
+              <td>14</td>
+              <td class="desc-col">Gigabit unmanaged desktop switch</td>
+              <td>
+                <div class="row-actions">
+                  <a href="/?edit=101" class="btn btn-sm btn-edit-row">Load to Edit</a>
+                  <a href="/delete/101" class="btn btn-sm btn-delete-row">Delete</a>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>102</strong></td>
+              <td>Crimping Tool RJ45</td>
+              <td>$22.00</td>
+              <td>8</td>
+              <td class="desc-col">Ratchet modular crimper for Cat5e/Cat6</td>
+              <td>
+                <div class="row-actions">
+                  <a href="/?edit=102" class="btn btn-sm btn-edit-row">Load to Edit</a>
+                  <a href="/delete/102" class="btn btn-sm btn-delete-row">Delete</a>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
