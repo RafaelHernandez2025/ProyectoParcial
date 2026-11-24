@@ -1,3 +1,7 @@
+#Esta parte importa las herramientas necesarias de Flask.
+#Blueprint permite organizar el inicio de sesión como un módulo independiente, render_template muestra las páginas HTML, 
+# request recibe los datos del formulario, redirect redirige al usuario hacia otra 
+# página y session mantiene la información del usuario autenticado.
 
 from flask import (
     Blueprint,
@@ -7,21 +11,34 @@ from flask import (
     session
 )
 
+#Esta librería permite proteger las contraseñas mediante hashes. 
+# generate_password_hash transforma la contraseña en un hash, 
+# mientras que check_password_hash verifica si la contraseña ingresada por el usuario corresponde al hash almacenado
+
 from werkzeug.security import (
     generate_password_hash,
     check_password_hash
 )
 
+#Esta librería permite trabajar con expresiones regulares, 
+# las cuales se utilizan en el código para comprobar que el correo electrónico ingresado tenga un formato válido.
+
 import re
 
 
-# Módulo de inicio de sesión
+
+
+
+#Crea un módulo de autenticación llamado auth, 
+# cuya función es separar las operaciones de inicio y cierre de sesión del archivo principal app.py, 
+# permitiendo una mejor organización del código mediante la programación modular.
 
 auth = Blueprint("auth", __name__)
 
 
-# Usuarios de prueba
-
+#Esta parte crea un diccionario que almacena temporalmente dos usuarios de prueba, 
+# cada uno con su correo electrónico, nombre, hash de contraseña y rol. 
+# Su función es permitir la autenticación sin necesidad de consultar una base de datos
 usuarios = {
     "almacen@securestock.com": {
         "nombre": "Usuario de Almacén",
@@ -37,7 +54,10 @@ usuarios = {
 }
 
 
-# Inicio de sesión
+
+#Obtiene el correo electrónico y la contraseña ingresados en el formulario HTML. 
+# En el correo, strip() elimina los espacios innecesarios al principio y al final, 
+# mientras que lower() convierte las letras a minúsculas para facilitar la búsqueda del usuario.
 
 @auth.route("/login", methods=["GET", "POST"])
 def login():
@@ -97,7 +117,8 @@ def login():
     )
 
 
-# Cerrar sesión
+#Define la función encargada de cerrar la sesión del usuario. 
+# Elimina toda la información de autenticación almacenada y redirige nuevamente al formulario de inicio de sesión.
 
 @auth.route("/logout")
 def logout():
